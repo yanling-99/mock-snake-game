@@ -28,8 +28,27 @@ snake[3] = {
     y: 0
 };
 
+// change moving direction by direction keys
 let moveDirection = 'Right';
+window.addEventListener('keydown', changeDirection);
+
+// update snake's state every 0.1 second
 let snakeMove = setInterval(draw, 100);
+
+function changeDirection(e) {
+    if (e.key == 'ArrowLeft' && moveDirection != 'Right') {
+        moveDirection = 'Left';
+    }
+    else if (e.key == 'ArrowRight' && moveDirection != 'Left') {
+        moveDirection = 'Right';
+    }
+    else if (e.key == 'ArrowUp' && moveDirection != 'Down') {
+        moveDirection = 'Up';
+    }
+    else if (e.key == 'ArrowDown' && moveDirection != 'Up ') {
+        moveDirection = 'Down';
+    }
+}
 
 function draw() {
     // refresh canvas graph
@@ -67,6 +86,7 @@ function draw() {
         y: nextSnakeY
     };
 
+    // confirm that whether the snake ate a point
     snake.pop();
     snake.unshift(nextHeadUnit);
 }
