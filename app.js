@@ -30,12 +30,12 @@ snake[3] = {
 
 // change moving direction by direction keys
 let moveDirection = 'Right';
-window.addEventListener('keydown', changeDirection);
+window.addEventListener('keydown', changeDirectionValue);
 
 // update snake's state every 0.1 second
 let snakeMove = setInterval(draw, 100);
 
-function changeDirection(e) {
+function changeDirectionValue(e) {
     if (e.key == 'ArrowLeft' && moveDirection != 'Right') {
         moveDirection = 'Left';
     }
@@ -45,7 +45,7 @@ function changeDirection(e) {
     else if (e.key == 'ArrowUp' && moveDirection != 'Down') {
         moveDirection = 'Up';
     }
-    else if (e.key == 'ArrowDown' && moveDirection != 'Up ') {
+    else if (e.key == 'ArrowDown' && moveDirection != 'Up') {
         moveDirection = 'Down';
     }
 }
@@ -56,6 +56,19 @@ function draw() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // fill/refill snake's body with colors
+    fillColor();
+
+    // update the coordinates of next head unit depend on moveDirection's value
+    let nextHeadUnit = changeDirection();
+
+    // confirm that whether the snake ate a point
+    snake.pop();
+    snake.unshift(nextHeadUnit);
+
+
+}
+
+function fillColor() {
     for (let i = 0; i < snake.length; i++) {
         if (i == 0) {
             ctx.fillStyle = 'yellow';
@@ -63,14 +76,31 @@ function draw() {
             ctx.fillStyle = 'lightblue';
         }
         ctx.strokeStyle = 'white'; // border style
+
+        // limit the moving space
+        if (snake[i].x >= canvas.width) {
+            snake[i].x = 0;
+        }
+        if (snake[i].x < 0) {
+            snake[i].x = canvas.width - bodyUnit;
+        }
+        if (snake[i].y >= canvas.height) {
+            snake[i].y = 0;
+        }
+        if (snake[i].y < 0) {
+            snake[i].y = canvas.height - bodyUnit;
+        }
+
         // rendering with (x, y, width, height)
         ctx.fillRect(snake[i].x, snake[i].y, bodyUnit, bodyUnit);
         ctx.strokeRect(snake[i].x, snake[i].y, bodyUnit, bodyUnit);
     }
+}
 
-    // decide the coordinates of next head unit depend on moveDirection's value
+function changeDirection() {
     let nextSnakeX = snake[0].x;
     let nextSnakeY = snake[0].y;
+
     if (moveDirection == 'Left') {
         nextSnakeX -= bodyUnit;
     } else if (moveDirection == 'Up') {
@@ -80,13 +110,5 @@ function draw() {
     } else if (moveDirection == 'Down') {
         nextSnakeY += bodyUnit;
     }
-
-    let nextHeadUnit = {
-        x: nextSnakeX,
-        y: nextSnakeY
-    };
-
-    // confirm that whether the snake ate a point
-    snake.pop();
-    snake.unshift(nextHeadUnit);
+    return { x: nextSnakeX, y: nextSnakeY };
 }
