@@ -9,24 +9,27 @@ const col = canvas.width / bodyUnit;
 
 
 let snake = []; // store objects
-// each object stores a (x,y) of rect.(snake's body)
-snake[0] = { // head
-    x: 80,
-    y: 0
-};
 
-snake[1] = {
-    x: 60,
-    y: 0
-};
-snake[2] = {
-    x: 40,
-    y: 0
-};
-snake[3] = {
-    x: 20,
-    y: 0
-};
+function createSnake() {
+    // each object stores a (x,y) of rect.(snake's body)
+    snake[0] = { // head
+        x: 80,
+        y: 0
+    };
+
+    snake[1] = {
+        x: 60,
+        y: 0
+    };
+    snake[2] = {
+        x: 40,
+        y: 0
+    };
+    snake[3] = {
+        x: 20,
+        y: 0
+    };
+}
 
 class Fruit {
     constructor() {
@@ -67,6 +70,8 @@ class Fruit {
     }
 }
 
+// initial setting
+createSnake();
 let myFruit = new Fruit();
 
 // change moving direction by direction keys
