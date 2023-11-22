@@ -74,15 +74,22 @@ class Fruit {
 createSnake();
 let myFruit = new Fruit();
 
+// update snake's state every 0.1 second
+let snakeMove = setInterval(draw, 100);
+
 // change moving direction by direction keys
 let moveDirection = 'Right';
 window.addEventListener('keydown', changeDirectionValue);
 
-// update snake's state every 0.1 second
-let snakeMove = setInterval(draw, 100);
-
-
 function draw() {
+    // check whether the head overlaps with the body
+    for (let body = 1; body < snake.length; body++) {
+        if (snake[body].x == snake[0].x && snake[body].y == snake[0].y) {
+            clearInterval(snakeMove);
+            alert('[ Game Over ]');
+            return;
+        }
+    }
     // refresh canvas graph
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -105,7 +112,7 @@ function draw() {
     }
     snake.unshift(nextHeadUnit);
 
-
+    window.addEventListener('keydown',changeDirectionValue)
 }
 
 function fillColor() {
@@ -166,4 +173,8 @@ function changeDirectionValue(e) {
     else if (e.key == 'ArrowDown' && moveDirection != 'Up') {
         moveDirection = 'Down';
     }
+
+    // to prevent game over from keying the direction value quickly a lot
+    // don't accept any 'keydown' event before the head was drawn
+    window.removeEventListener('keydown',changeDirectionValue)
 }
