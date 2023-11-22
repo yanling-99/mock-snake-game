@@ -1,14 +1,19 @@
 // CanvasRenderingContext2D
 const canvas = document.getElementById('myCanvas');
-const ctx = canvas.getContext('2d');
 // return a drawing context of canvas, it's used to draw graphs
+const ctx = canvas.getContext('2d');
 
 const bodyUnit = 20;
 const row = canvas.height / bodyUnit;
 const col = canvas.width / bodyUnit;
 
 
-let snake = []; // store objects
+let snake = []; // store objects (body's coordinates)
+let score = 0;
+let topScore;
+loadTopScore();
+document.getElementById('myScore').innerHTML = 'Score : ' + score;
+document.getElementById('myTopScore').innerHTML = 'Top Score : ' + topScore;
 
 function createSnake() {
     // each object stores a (x,y) of rect.(snake's body)
@@ -101,18 +106,21 @@ function draw() {
     // update the coordinates of next head unit depend on moveDirection's value
     let nextHeadUnit = changeDirection();
 
-    // confirm that whether the snake ate a point
+    // confirm that whether the snake ate a point/fruit
     if (snake[0].x == myFruit.x && snake[0].y == myFruit.y) {
         // new random position of the fruit
         myFruit.pickAnewPosition();
         // update the score
-
+        score++;
+        updateTopScore(score);
+        document.getElementById('myScore').innerHTML = 'Score : ' + score;
+        document.getElementById('myTopScore').innerHTML = 'Top Score : ' + topScore;
     } else {
         snake.pop();
     }
     snake.unshift(nextHeadUnit);
 
-    window.addEventListener('keydown',changeDirectionValue)
+    window.addEventListener('keydown', changeDirectionValue);
 }
 
 function fillColor() {
@@ -176,5 +184,20 @@ function changeDirectionValue(e) {
 
     // to prevent game over from keying the direction value quickly a lot
     // don't accept any 'keydown' event before the head was drawn
-    window.removeEventListener('keydown',changeDirectionValue)
+    window.removeEventListener('keydown', changeDirectionValue);
+}
+
+function loadTopScore() {
+    if (localStorage.getItem('TopScore') == null) {
+        topScore = 0;
+    } else {
+        topScore = Number(localStorage.getItem('TopScore'));
+    }
+}
+
+function updateTopScore(score) {
+    if (score > topScore) {
+        localStorage.setItem('TopScore', JSON.stringify(score));
+        topScore = score;
+    }
 }
